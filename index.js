@@ -1,7 +1,7 @@
 var sanitizer = require('sanitizer');
 var map = require('dank-map');
 var each = require('dank-each');
-	;
+
 
 module.exports = function objectToXML(obj, namespace, depth) {
 	var xml = [];
@@ -13,7 +13,10 @@ module.exports = function objectToXML(obj, namespace, depth) {
 		if (key === '@') {
 			return;
 		}
-
+		
+		if (key === '_namespace_') {
+			return;
+		}
 		if (value && (value.hasOwnProperty('@') || value.hasOwnProperty('#'))) {
 			attributes = map(value['@'], function (key, value) {
 				if (value && value.constructor.name == 'Date') {
@@ -70,7 +73,7 @@ module.exports = function objectToXML(obj, namespace, depth) {
 			}
 			else if (typeof (value) == 'object') {
 				xml.push('\n');
-				xml.push(objectToXML(value, namespace, depth + 1));
+				xml.push(objectToXML(value,value._namespace_? value._namespace_ : namespace, depth + 1));
 				
 				for (var x = 0; x < depth; x++) {
 					xml.push('  ');
